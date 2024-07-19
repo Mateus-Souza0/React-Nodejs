@@ -4,9 +4,21 @@ import express, {request} from 'express'
 
 
 const app = express()
+app.use(express.json())
+
+const users = []
+
+app.post('/users' , (req, res) => {
+    
+    users.push(req.body)
+
+    res.status(201)
+})
 
 app.get('/users' , (req, res) => {
-    app.send('ok deu bom')
+
+    res.status(200).json(users)
+
 })
 
 
