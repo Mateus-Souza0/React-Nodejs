@@ -1,16 +1,25 @@
-
+import { useEffect, useState } from 'react'
 import './style.css'
 import Trash from '../../assets/16qg.svg'
+import api from '../../services/api'
 
-
-
-const users = [{
-  id: '432423',
-  name: 'mateus',
-  email: 'rerw@gfd.com'
-}]
 
 function Home() {
+
+
+  const [users, setUsers] = useState([])
+
+  async function getUsers(){
+    const usersFromApi = await api.get('/users')
+
+    setUsers(usersFromApi.data)
+  }
+
+  useEffect(() => {
+    getUsers()
+  }, []);
+ 
+
   return (
 
     <div className='container'>
