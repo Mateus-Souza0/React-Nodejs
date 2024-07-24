@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useRef } from 'react'
 import './style.css'
 import Trash from '../../assets/16qg.svg'
 import api from '../../services/api'
@@ -9,16 +9,34 @@ function Home() {
 
   const [users, setUsers] = useState([])
 
-  async function getUsers(){
+
+  const inputName = useRef()
+  const inputEmail = useRef()
+
+  async function getUsers() {
     const usersFromApi = await api.get('/users')
 
     setUsers(usersFromApi.data)
   }
 
+  async function creatUsers() {
+    const usersFromApi = await api.post('/users', {
+      name: inputName.current.value,
+      email: inputEmail.current.value
+    })
+    getUsers()
+  }
+  async function deleteUsers(id) {
+    await api.delete(`/users/${id}`)
+
+    getUsers()
+  }
+
+
   useEffect(() => {
     getUsers()
   }, []);
- 
+
 
   return (
 
@@ -26,9 +44,9 @@ function Home() {
 
       <form action="">
         <h1>Cadastro Usuários</h1>
-        <input placeholder='Nome' name='nome' type="text" />
-        <input placeholder='E-mail' name='email' type="email" />
-        <button type='button'>Cadastrar</button>
+        <input placeholder='Nome' name='nome' type="text" ref={inputName} />
+        <input placeholder='E-mail' name='email' type="email" ref={inputEmail} />
+        <button type='button' onClick={creatUsers}>Cadastrar</button>
       </form>
 
       {users.map(user => (
@@ -39,7 +57,7 @@ function Home() {
           </div>
 
           <div>
-            <button>
+            <button onClick={() =>deleteUsers(user.id)}>
               <img src={Trash} />
             </button>
           </div>
